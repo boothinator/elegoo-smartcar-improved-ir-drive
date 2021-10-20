@@ -1,5 +1,4 @@
 #include <IRremote.h>
-#include <IRremoteInt.h>
 
 
 #define ENABLE_LEFT 5
@@ -10,20 +9,17 @@
 #define INPUT_4 11
 
 #define RECV_PIN 12
-decode_results results;
-IRrecv irrecv(RECV_PIN);
 
-#define CONTINUE_CODE 4294967295
-#define FORWARD_CODE 16736925 // FF 629D
-#define FORWARD_CODE_ALT 5316027
-#define REVERSE_CODE 16754775
-#define REVERSE_CODE_ALT 2747854299
-#define LEFT_CODE 16720605
-#define LEFT_CODE_ALT 1386468383
-#define RIGHT_CODE 16761405
-#define RIGHT_CODE_ALT 553536955
-#define OK_CODE 16712445
-#define OK_CODE_ALT 3622325019
+#define CONTINUE_CODE 0
+#define FORWARD_CODE 3108437760
+#define REVERSE_CODE 3927310080
+#define LEFT_CODE 3141861120
+#define RIGHT_CODE 3158572800
+#define OK_CODE 3208707840
+#define STAR_CODE 2417041970
+#define POUND_CODE 3041591040
+#define ONE_CODE 4088808595 
+#define THREE_CODE 4061003520 
 
 unsigned long lastIRCode = 0;
 unsigned long lastIRCodeTime = 0;
@@ -41,7 +37,7 @@ void setup() {
   pinMode(INPUT_3, OUTPUT);
   pinMode(INPUT_4, OUTPUT);
 
-  irrecv.enableIRIn();
+  IrReceiver.begin(RECV_PIN, ENABLE_LED_FEEDBACK);
   Serial.begin(9600);  // debug output at 9600 baud
 }
 
@@ -112,9 +108,9 @@ void left() {
 
 void loop() {
   
-  if (irrecv.decode(&results)) {
-    lastIRCode = results.value;
-    irrecv.resume();
+  if (IrReceiver.decode()) {
+    lastIRCode = IrReceiver.decodedIRData.decodedRawData;
+    IrReceiver.resume();
     
     lastIRCodeTime = millis();
     Serial.println(lastIRCode);
@@ -126,19 +122,19 @@ void loop() {
       currentIRCodeTime = millis();
     }
     
-    if (lastIRCode == FORWARD_CODE || lastIRCode == FORWARD_CODE_ALT) {
+    if (lastIRCode == FORWARD_CODE) {
       motorPower = 100;
       forward();
-    } else if (lastIRCode == REVERSE_CODE || lastIRCode == REVERSE_CODE_ALT) {
+    } else if (lastIRCode == REVERSE_CODE) {
       motorPower = 100;
       reverse();
-    } else if (lastIRCode == LEFT_CODE || lastIRCode == LEFT_CODE_ALT) {
+    } else if (lastIRCode == LEFT_CODE) {
       motorPower = 150;
       left();
-    } else if (lastIRCode == RIGHT_CODE || lastIRCode == RIGHT_CODE_ALT) {
+    } else if (lastIRCode == RIGHT_CODE) {
       motorPower = 150;
       right();
-    } else if (lastIRCode == OK_CODE || lastIRCode == OK_CODE_ALT) {
+    } else if (lastIRCode == OK_CODE) {
       motorPower = 0;
       brake();
     }
