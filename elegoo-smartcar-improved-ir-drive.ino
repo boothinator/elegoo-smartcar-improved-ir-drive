@@ -7,6 +7,10 @@
 #define INPUT_2 8
 #define INPUT_3 9
 #define INPUT_4 11
+#define INPUT_R1 10
+#define INPUT_R2 2
+#define INPUT_R3 3
+#define INPUT_R4 4
 
 #define RECV_PIN 12
 
@@ -18,7 +22,7 @@
 #define OK_CODE 3208707840
 #define STAR_CODE 2417041970
 #define POUND_CODE 3041591040
-#define ONE_CODE 4088808595 
+#define ONE_CODE 3910598400 
 #define THREE_CODE 4061003520 
 
 unsigned long lastIRCode = 0;
@@ -36,6 +40,10 @@ void setup() {
   pinMode(INPUT_2, OUTPUT);
   pinMode(INPUT_3, OUTPUT);
   pinMode(INPUT_4, OUTPUT);
+  pinMode(INPUT_R1, OUTPUT);
+  pinMode(INPUT_R2, OUTPUT);
+  pinMode(INPUT_R3, OUTPUT);
+  pinMode(INPUT_R4, OUTPUT);
 
   IrReceiver.begin(RECV_PIN, ENABLE_LED_FEEDBACK);
   Serial.begin(9600);  // debug output at 9600 baud
@@ -48,62 +56,114 @@ void setPower() {
 
 void forward() {
   analogWrite(ENABLE_LEFT, motorPower);
-  digitalWrite(INPUT_1, HIGH);
-  digitalWrite(INPUT_2, LOW);
-  
-  analogWrite(ENABLE_RIGHT, motorPower);
-  digitalWrite(INPUT_3, LOW);
-  digitalWrite(INPUT_4, HIGH);
-}
-
-void reverse() {
-  analogWrite(ENABLE_LEFT, motorPower);
   digitalWrite(INPUT_1, LOW);
   digitalWrite(INPUT_2, HIGH);
+  digitalWrite(INPUT_R1, HIGH);
+  digitalWrite(INPUT_R2, LOW);
   
   analogWrite(ENABLE_RIGHT, motorPower);
   digitalWrite(INPUT_3, HIGH);
   digitalWrite(INPUT_4, LOW);
+  digitalWrite(INPUT_R3, LOW);
+  digitalWrite(INPUT_R4, HIGH);
+}
+
+void reverse() {
+  analogWrite(ENABLE_LEFT, motorPower);
+  digitalWrite(INPUT_1, HIGH);
+  digitalWrite(INPUT_2, LOW);
+  digitalWrite(INPUT_R1, LOW);
+  digitalWrite(INPUT_R2, HIGH);
+  
+  analogWrite(ENABLE_RIGHT, motorPower);
+  digitalWrite(INPUT_3, LOW);
+  digitalWrite(INPUT_4, HIGH);
+  digitalWrite(INPUT_R3, HIGH);
+  digitalWrite(INPUT_R4, LOW);
 }
 
 void brake() {
   analogWrite(ENABLE_LEFT, 0);
   digitalWrite(INPUT_1, HIGH);
   digitalWrite(INPUT_2, HIGH);
+  digitalWrite(INPUT_R1, HIGH);
+  digitalWrite(INPUT_R2, HIGH);
   
   analogWrite(ENABLE_RIGHT, 0);
   digitalWrite(INPUT_3, HIGH);
   digitalWrite(INPUT_4, HIGH);
+  digitalWrite(INPUT_R3, HIGH);
+  digitalWrite(INPUT_R4, HIGH);
 }
 
 void coast() {
   analogWrite(ENABLE_LEFT, 0);
   digitalWrite(INPUT_1, LOW);
   digitalWrite(INPUT_2, LOW);
+  digitalWrite(INPUT_R1, LOW);
+  digitalWrite(INPUT_R2, LOW);
   
   analogWrite(ENABLE_RIGHT, 0);
   digitalWrite(INPUT_3, LOW);
   digitalWrite(INPUT_4, LOW);
+  digitalWrite(INPUT_R3, LOW);
+  digitalWrite(INPUT_R4, LOW);
 }
 
 void right() {
   analogWrite(ENABLE_LEFT, motorPower);
   digitalWrite(INPUT_1, HIGH);
   digitalWrite(INPUT_2, LOW);
+  digitalWrite(INPUT_R1, LOW);
+  digitalWrite(INPUT_R2, HIGH);
   
   analogWrite(ENABLE_RIGHT, motorPower);
   digitalWrite(INPUT_3, HIGH);
   digitalWrite(INPUT_4, LOW);
+  digitalWrite(INPUT_R3, LOW);
+  digitalWrite(INPUT_R4, HIGH);
 }
 
 void left() {
   analogWrite(ENABLE_LEFT, motorPower);
   digitalWrite(INPUT_1, LOW);
   digitalWrite(INPUT_2, HIGH);
+  digitalWrite(INPUT_R1, HIGH);
+  digitalWrite(INPUT_R2, LOW);
   
   analogWrite(ENABLE_RIGHT, motorPower);
   digitalWrite(INPUT_3, LOW);
   digitalWrite(INPUT_4, HIGH);
+  digitalWrite(INPUT_R3, HIGH);
+  digitalWrite(INPUT_R4, LOW);
+}
+
+void strafeLeft() {
+  analogWrite(ENABLE_LEFT, motorPower);
+  digitalWrite(INPUT_1, LOW);
+  digitalWrite(INPUT_2, HIGH);
+  digitalWrite(INPUT_R1, LOW);
+  digitalWrite(INPUT_R2, HIGH);
+  
+  analogWrite(ENABLE_RIGHT, motorPower);
+  digitalWrite(INPUT_3, LOW);
+  digitalWrite(INPUT_4, HIGH);
+  digitalWrite(INPUT_R3, LOW);
+  digitalWrite(INPUT_R4, HIGH);
+}
+
+void strafeRight() {
+  analogWrite(ENABLE_LEFT, motorPower);
+  digitalWrite(INPUT_1, HIGH);
+  digitalWrite(INPUT_2, LOW);
+  digitalWrite(INPUT_R1, HIGH);
+  digitalWrite(INPUT_R2, LOW);
+  
+  analogWrite(ENABLE_RIGHT, motorPower);
+  digitalWrite(INPUT_3, HIGH);
+  digitalWrite(INPUT_4, LOW);
+  digitalWrite(INPUT_R3, HIGH);
+  digitalWrite(INPUT_R4, LOW);
 }
 
 void loop() {
@@ -134,6 +194,12 @@ void loop() {
     } else if (lastIRCode == RIGHT_CODE) {
       motorPower = 150;
       right();
+    } else if (lastIRCode == ONE_CODE) {
+      motorPower = 150;
+      strafeLeft();
+    } else if (lastIRCode == THREE_CODE) {
+      motorPower = 150;
+      strafeRight();
     } else if (lastIRCode == OK_CODE) {
       motorPower = 0;
       brake();
