@@ -9,7 +9,7 @@
 #define INPUT_4 11
 #define INPUT_R1 10
 #define INPUT_R2 2
-#define INPUT_R3 3
+#define INPUT_R3 A3
 #define INPUT_R4 4
 
 #define RECV_PIN 12
