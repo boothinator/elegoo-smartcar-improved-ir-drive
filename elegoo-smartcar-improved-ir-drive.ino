@@ -190,16 +190,16 @@ void loop() {
       reverse();
     } else if (lastIRCode == LEFT_CODE) {
       motorPower = 150;
-      left();
+      strafeLeft();
     } else if (lastIRCode == RIGHT_CODE) {
       motorPower = 150;
-      right();
+      strafeRight();
     } else if (lastIRCode == ONE_CODE) {
       motorPower = 150;
-      strafeLeft();
+      left();
     } else if (lastIRCode == THREE_CODE) {
       motorPower = 150;
-      strafeRight();
+      right();
     } else if (lastIRCode == OK_CODE) {
       motorPower = 0;
       brake();
